@@ -38,9 +38,19 @@ def getnames(names):
             last = namesplit[0].strip()
             firsts = [i.strip() for i in namesplit[1].split()]
         else:
-            namesplit = namestring.split()
-            last = namesplit.pop()
-            firsts = [i.replace('.', '. ').strip() for i in namesplit]
+            match = re.search('{.*?}',  namestring)
+            if match:
+                group = match.group()
+                if namestring.startswith(group):
+                    firsts = [group[1:-1]]
+                    last = namestring.replace(group, '').strip('{ }')
+                else:
+                    last = group[1:-1]
+                    firsts = [namestring.replace(group, '').strip('{ }')]
+            else:
+                namesplit = namestring.split()
+                last = namesplit.pop()
+                firsts = [i.replace('.', '. ').strip() for i in namesplit]
         if last in ['jnr', 'jr', 'junior']:
             last = firsts.pop()
         for item in firsts:
